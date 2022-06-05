@@ -1,0 +1,164 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../static/BootStrap/bootstrap-3.4.1-dist/css/bootstrap.css">
+
+</head>
+
+<body>
+<div class="container">
+    <ul class="nav nav-pills">
+        <button type="button" class="btn btn-primary btn-success" data-toggle="modal" data-target="#myModal">
+            添加用户
+        </button>
+    </ul>
+    <div class="bs-example" data-example-id="bordered-table">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>用户名字</th>
+                <th>密码</th>
+                <th>年龄</th>
+            </tr>
+            </thead>
+            <tbody id="user_container">
+            {% for obj in data_list %}
+                <tr>
+                    <th scope="row">{{ obj.id }}</th>
+                    <td>{{ obj.name }}</td>
+                    <td>{{ obj.password }}</td>
+                    <td>{{ obj.age }} <a style="float: right" class="btn btn-danger btn-xs"
+                                         href="/index/delete/?nid={{ obj.id }}">删除</a>
+                        <button type="button" style="float: right; margin-right: 8px" class="btn btn-xs btn-primary"
+                                data-toggle="modal" data-target="#myModal{{ obj.id }}">
+                            编辑
+                        </button>
+                    </td>
+                </tr>
+                <!-- Modal -->
+                <div class="modal fade" id="myModal{{ obj.id }}" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title" id="myModalLabel">修改用户信息</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" action="/index/edit/?nid={{ obj.id }}">
+                                    <div class="form-group">
+                                        <label for="disabledTextInput">用户姓名</label>
+                                        <input type="text" id="disabledTextInput" class="form-control"
+                                               value={{ obj.name }} name="name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="disabledTextInput">密码</label>
+                                        <input type="text" id="disabledTextInput" class="form-control"
+                                               value={{ obj.password }} name="password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="disabledTextInput">年龄</label>
+                                        <input type="text" id="disabledTextInput" class="form-control"
+                                               value={{ obj.age }} name="age">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                                        </button>
+                                        <button type="submit" class="btn btn-primary">确认</button>
+                                    </div>
+
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Button trigger modal -->
+
+
+<!-- Modal_two -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">添加用户</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="forml_">
+                    <div class="form-group">
+                        <label for="disabledTextInput">用户姓名</label>
+                        <input id="in1" type="text" id="disabledTextInput" class="form-control" placeholder="请输入姓名"
+                               name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="disabledTextInput">密码</label>
+                        <input id="in2" type="text" id="disabledTextInput" class="form-control" placeholder="请输入密码"
+                               name="password">
+                    </div>
+                    <div class="form-group">
+                        <label for="disabledTextInput">年龄</label>
+                        <input id="in3" type="text" id="disabledTextInput" class="form-control" placeholder="请输入年龄"
+                               name="age">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">确认</button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="../static/BootStrap/bootstrap-3.4.1-dist/js/jquery.min.js"></script>
+<script src="../static/BootStrap/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
+
+<script>
+
+
+    $('#forml_').on('submit', function (e) {
+        var in1 = $('#in1').val().trim()
+        var in2 = $('#in2').val().trim()
+        var in3 = $('#in3').val().trim()
+        if (in1.length <= 0 || in2.length <= 0 || in3.length <= 0) {
+            e.preventDefault()
+            return alert("请输入完整信息")
+        }
+
+        var data = $(this).serialize()//我把这里的print取消了，不然会弹出一个打印的界面出来
+        console.log(data);
+        $.ajax({
+            type: 'POST',
+            url: '/index/',
+            data: data,
+            success: function (e) {
+
+                alert('用户创建成功')
+            }
+        })
+    })
+
+</script>
+</body>
+
+</html>
